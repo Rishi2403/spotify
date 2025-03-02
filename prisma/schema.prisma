@@ -5,24 +5,27 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User{
     id        String      @id @default(cuid())
-    email     String 
+    email     String      @unique
     provider  Provider
-    role      Role
+    role      Role        @default(EndUser)
     streams   Stream[]
     Upvote    Upvote[]
 }
 model Stream{
-      id        String      @id @default(uuid())
-      type      StreamType
-      active    Boolean     @default(true)
-      upvotes   Int
-      userId    String
-      user      User       @relation(fields: [userId], references: [id])
-      upvote    Upvote[]
+      id          String      @id @default(uuid())
+      type        StreamType
+      url         String
+      extractedId String
+      active      Boolean     @default(true)
+      upvotes     Int
+      userId      String
+      user        User       @relation(fields: [userId], references: [id])
+      upvote      Upvote[]
 }
 
 model  Upvote {
